@@ -1,0 +1,10 @@
+<div class="text-center row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-8">
+
+        <?php include_once ('sign-in.php'); ?>
+        <?php include_once ('sign-up.php'); ?>
+
+    </div>
+    <div class="col-sm-2"></div>
+</div>

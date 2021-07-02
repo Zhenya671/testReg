@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users>
+    <user>
+        <login></login>
+        <email></email>
+        <name></name>
+        <salt></salt>
+        <password_hash></password_hash>
+        <cookie_key></cookie_key>
+        <session_key></session_key>
+    </user>
+</users>
