@@ -4,7 +4,9 @@ class Users {
 
     public $dbUsers;
 
+
     public $errorsValidate = null;
+
 
     public function __construct() {
 
@@ -12,10 +14,9 @@ class Users {
 
     }
 
-    public function signUpUsers($signUpForm) {
+    public function signUpUsers($signUpForm ) {
 
         $this->validateForSignUp($signUpForm);
-
         if ($this->errorsValidate !== null){
             return $this->errorsValidate;
 
@@ -34,7 +35,7 @@ class Users {
         }
     }
 
-    public function signInUser($signInForm){
+    public function signInUser($signInForm ){
 
         $this->validateForSignIn($signInForm);
 
@@ -45,14 +46,14 @@ class Users {
         }
     }
 
-    public function validateForSignIn(array $signInForm){
+    public function validateForSignIn($signInForm){
 
         $signInForm = $this->validateNotNull($signInForm);
 
         $signInForm = $this->screening($signInForm);
 
         $user = $this->searchByLogin($signInForm['login']);
-        if($user === false || $this->equalityPassword($user, $signInForm['password'])){
+        if($user === false || !$this->equalityPassword($user, $signInForm['password'])){
             $this->errorsValidate[] = 'Invalid login or password';
         }
 
@@ -64,8 +65,10 @@ class Users {
         $this->validateEmail($signUpForm['email']);
         $signUpForm = $this->screening($signUpForm);
         $this->validatePassword($signUpForm['password'], $signUpForm['confirm_password']);
+        $this->validateLogin($signUpForm['login']);
         $this->validateUniqueLogin($signUpForm['login']);
         $this->validateUniqueEmail($signUpForm['email']);
+        $this->validateName($signUpForm['name']);
 
     }
 
@@ -77,8 +80,6 @@ class Users {
             $value = trim($value);
             if(strlen($value) == 0) {
                 $nullFlaf = true;
-            } elseif (strlen($value) < 6) {
-                $this->errorsValidate[] = 'Field"'.$key.'" must not be shorter than six characters';
             }
 
             $newParam[$key] = $value;
@@ -92,6 +93,29 @@ class Users {
 
 }
 
+    public function validateName($name) {
+
+        if(preg_match("/^[A-Za-z0-9]{2,2}$/", $name) == 0 ) {
+            $this->errorsValidate[] = 'name must only contain 2 character (letter or number)';
+            return false;
+        }
+
+        return true;
+
+    }
+
+    public function validateLogin($login){
+
+        if(preg_match("/^[A-Za-z0-9]{2,20}$/", $login) == 0) {
+            $this->errorsValidate[] = 'login should contain only letters and numbers';
+            return false;
+        } elseif (strlen($login) < 6) {
+            $this->errorsValidate[] = "field login must not be shorter than 6";
+            return false;
+        }
+        return true;
+    }
+
     public function screening(array $param) {
 
         $newParam = [];
@@ -100,13 +124,13 @@ class Users {
             $newParam[$key] = htmlspecialchars($value);
         }
 
-        return$newParam;
+        return $newParam;
 
     }
 
     public function validateEmail($email) {
 
-        if(preg_match('/.+@.+\..+/i', $email) == 0)  {
+        if(preg_match("/^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/", $email) == 0)  {
             $this->errorsValidate[] = '"'.$email.'"does not match format email';
             return false;
         }
@@ -117,9 +141,34 @@ class Users {
     public function validatePassword($password, $confirm_password) {
 
         if($password !== $confirm_password){
+
             $this->errorsValidate[] = 'Passwords mismatch';
             return false;
 
+        } elseif (preg_match("/(?=.*[0-9])/", $password) == 0) {
+            $this->errorsValidate[] = 'password should contain min 1 number';
+            return false;
+
+        } elseif (preg_match("/(?=.*[!@#$%^&*])/", $password) == 0) {
+            $this->errorsValidate[] = 'password should contain min 1 special char';
+            return false;
+
+        } elseif (preg_match("/(?=.*[a-z])/", $password) == 0) {
+            $this->errorsValidate[] = 'password should contain min 1 lowercase letter';
+            return false;
+
+        } elseif (preg_match("/(?=.*[A-Z])/", $password) == 0) {
+            $this->errorsValidate[] = 'password should contain min 1 uppercase letter';
+            return false;
+
+        } elseif (preg_match("/[0-9a-zA-Z!@#$%^&*]/", $password) == 0){
+            $this->errorsValidate[] = 'please fill correctly';
+            return false;
+
+        } elseif (strlen($password) < 6) {
+
+            $this->errorsValidate[] = "field password must not be shorter than 6";
+            return false;
         }
 
         return true;
@@ -142,7 +191,7 @@ class Users {
 
     }
 
-    public function generateSalt($length = 10) {
+    public static function generateSalt($length = 10) {
 
         return substr(md5(mt_rand()), 0, $length );
 
@@ -165,10 +214,10 @@ class Users {
         $resultObject = false;
 
         foreach ($this->dbUsers as $value) {
-            if (htmlspecialchars_decode(trim($login)) == trim($value->login));
-            $resultObject = $value;
-            break;
-
+            if (htmlspecialchars_decode(trim($login)) === trim($value->login)) {
+                $resultObject = $value;
+                break;
+            }
         }
 
         return $resultObject;

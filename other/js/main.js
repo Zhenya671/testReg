@@ -1,9 +1,10 @@
 $(document).ready(function (){
 
     $('#sign-in-button').click(function () {
+
         $.ajax({
             type: 'POST',
-            url: '/site/sign-in',
+            url: '/site/signin.php',
             dataType: 'json',
             data: $('#sign-in-form').serialize(),
             success: function (data) {
@@ -24,16 +25,18 @@ $(document).ready(function (){
     $('#sign-up-button').click(function () {
         $.ajax({
             type:'POST',
-            url: '/site/sign-up',
+            url: '/site/signup.php',
             dataType: 'json',
             data:  $('#sign-up-form').serialize(),
             success: function (data) {
                 if (data.success) {
-                    $('#sign-up-errors').html(data.message).hide();
                     $('#sign-up-success').html(data.message).show();
+                    $('#sign-up-errors').html(data.message).hide();
 
                     $('#sign-up-form')[0].reset();
+
                 } else {
+
                     $('#sign-up-errors').html(data.message).show();
                     $('#sign-up-success').html(data.message).hide();
                 }
@@ -44,3 +47,4 @@ $(document).ready(function (){
         })
     })
 })
+

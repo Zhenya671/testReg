@@ -11,6 +11,7 @@ class Router {
     public function run() {
 
         $uri = trim($_SERVER['REQUEST_URI'], '/');
+        $uri = substr($uri,0, -4);
 
         foreach ($this->routes as $uriPattern => $path) {
             if(preg_match("~$uriPattern~", $uri)) {

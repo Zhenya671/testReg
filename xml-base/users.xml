@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <users>
-    <user>
-        <login></login>
-        <email></email>
-        <name></name>
-        <salt></salt>
-        <password_hash></password_hash>
-        <cookie_key></cookie_key>
-        <session_key></session_key>
-    </user>
-</users>
+
+
+
+    
+<user><login>123123</login><email>aa@mai.ru</email><name>ns</name><salt>1e2e564f77</salt><password_hash>1ee9e8b8029f18f13775fe35f9d58456</password_hash></user><users><session_key>2a85744fddb30e26e9fc</session_key></users></users>

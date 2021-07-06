@@ -19,7 +19,7 @@ class SiteController extends MainController {
 
         $users = new Users();
 
-        $activateUser = $users->signInUser($_POST['signInForm']['login']);
+        $activateUser = $users->signInUser($_POST['signInForm']);
         if ($activateUser === true) {
 
             $numberUser = (int)$users->searchObjectNumberByLogin($_POST['signInForm']['login']);
@@ -46,7 +46,9 @@ class SiteController extends MainController {
     public function actionSignup(){
 
         $users = new Users();
-        $registerUser = $users->signUpUsers($_POST['signInForm']);
+
+        $registerUser = $users->signUpUsers($_POST['signUpForm']);
+
         if ($registerUser === true) {
             self::responseJson([
                 'success' => true,
@@ -69,5 +71,6 @@ class SiteController extends MainController {
         $this->redirect('');
 
     }
+
 
 }
